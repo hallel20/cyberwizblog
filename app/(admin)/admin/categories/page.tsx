@@ -61,7 +61,7 @@ const page = async ({ searchParams }: any) => {
           </thead>
           <tbody>
             {/* Row 1 */}
-            {categories.map((category) => (
+            {categories.map((category: any) => (
               <tr key={category.id}>
                 <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <p className="text-gray-900 whitespace-no-wrap">
