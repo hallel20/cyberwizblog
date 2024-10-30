@@ -24,7 +24,7 @@ export default async function Home() {
           {/* Featured Article */}
           <div className="bg-white p-4 rounded-lg shadow-md mb-6">
             <PostSlider
-              posts={posts}
+              posts={featuredPosts}
               //TODO: change to featured posts
             />
           </div>
@@ -35,7 +35,7 @@ export default async function Home() {
             <div className="grid grid-cols-2 gap-4">
               {/* Watch article card */}
 
-              {posts.map((post) => (
+              {posts.map((post: any) => (
                 <div
                   className="bg-white p-4 rounded-lg shadow-md"
                   key={post.id}
@@ -71,7 +71,7 @@ export default async function Home() {
           <div className="bg-white p-4 rounded-lg shadow-md mb-6">
             <h3 className="text-xl font-bold mb-4">Most Popular</h3>
             <div className="space-y-2">
-              {popularPosts?.map((post) => (
+              {popularPosts?.map((post: any) => (
                 <div className="text-gray-700 flex gap-2" key={post.id}>
                   <Image
                     src={post.images[0].url}
@@ -97,7 +97,7 @@ export default async function Home() {
           <div className="bg-white p-4 rounded-lg shadow-md">
             <h3 className="text-xl font-bold mb-4">Latest</h3>
             <div className="space-y-2">
-              {posts?.map((post) => (
+              {posts?.map((post: any) => (
                 <div className="text-gray-700 flex gap-2" key={post.id}>
                   <Image
                     src={post.images[0].url}
