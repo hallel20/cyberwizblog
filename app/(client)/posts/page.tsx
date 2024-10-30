@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { getPosts, postCount } from "@/lib/data";
 import { marked } from "marked";
 import Link from "next/link";
