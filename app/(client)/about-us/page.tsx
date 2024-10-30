@@ -6,7 +6,7 @@ const page = () => {
         <h1 className="text-4xl font-bold text-blue-600">About CyberWizDev</h1>
         <p className="text-gray-700 text-lg">
           Welcome to <span className="font-semibold">CyberWizDev</span> – your
-          trusted partner in innovative web solutions! We’re a team of
+          trusted partner in innovative web solutions! We&apos;re a team of
           passionate developers, designers, and digital strategists dedicated to
           empowering businesses through the art of technology.
         </p>
@@ -47,17 +47,17 @@ const page = () => {
         </h2>
         <p className="text-gray-600">
           Our blog is where we share our journey, insights, and the latest in
-          web technology with you. Whether you're a developer, a business owner,
-          or a tech enthusiast, you'll find valuable resources on front-end and
-          back-end development, emerging tools, SEO, and industry best
-          practices.
+          web technology with you. Whether you&apos;re a developer, a business
+          owner, or a tech enthusiast, you&apos;ll find valuable resources on
+          front-end and back-end development, emerging tools, SEO, and industry
+          best practices.
         </p>
       </section>
 
       {/* Closing Statement */}
       <section className="text-center">
         <p className="text-lg text-gray-700">
-          Thank you for joining us on this journey – let’s build something
+          Thank you for joining us on this journey – let&apos;s build something
           remarkable together!
         </p>
       </section>

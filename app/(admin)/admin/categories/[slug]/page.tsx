@@ -9,7 +9,7 @@ import { FaArrowCircleLeft } from "react-icons/fa";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-const page = async ({ params }: Params) => {
+const page = async ({ params }: any) => {
   const { slug } = params;
   try {
     const category = await getCategory(slug);

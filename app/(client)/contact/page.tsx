@@ -7,8 +7,9 @@ const page = () => {
       <header className="text-center space-y-4">
         <h1 className="text-4xl font-bold text-blue-600">Get in Touch</h1>
         <p className="text-gray-700 text-lg">
-          Have questions or need assistance? We're here to help! Reach out to
-          the CyberWizDev team, and we'll get back to you as soon as possible.
+          Have questions or need assistance? We&apos;re here to help! Reach out
+          to the CyberWizDev team, and we&apos;ll get back to you as soon as
+          possible.
         </p>
       </header>
 

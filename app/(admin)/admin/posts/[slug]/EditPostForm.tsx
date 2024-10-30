@@ -113,7 +113,9 @@ const EditPost = ({ post }: { post: any }) => {
                 className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {categories?.map((category) => (
-                  <option value={category.id}>{category.name}</option>
+                  <option value={category.id} key={category.id}>
+                    {category.name}
+                  </option>
                 ))}
               </select>
             </div>
