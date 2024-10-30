@@ -3,7 +3,6 @@
 import { Controller, useForm } from "react-hook-form";
 import SimpleMDE from "react-simplemde-editor";
 import { useCallback, useEffect, useState } from "react";
-import { Category } from "@prisma/client";
 import ImageUploadModal from "@/components/reusable/ImageUploadModal";
 import { getCategories, getPost } from "@/lib/data";
 import Image from "next/image";
@@ -16,7 +15,7 @@ import { IoMdCheckmarkCircle } from "react-icons/io";
 import { FaXmark } from "react-icons/fa6";
 
 const PostForm = () => {
-  const [categories, setCategories] = useState<Category[]>();
+  const [categories, setCategories] = useState<any[]>();
   const [images, setImages] = useState<string[]>();
   const [loading, setLoading] = useState(false);
   const [slugTaken, setSlugTaken] = useState<boolean>();
@@ -151,7 +150,7 @@ const PostForm = () => {
           <option value="" disabled selected>
             ---
           </option>
-          {categories?.map((category, i) => (
+          {categories?.map((category: any, i: number) => (
             <option value={category.id} key={category.id}>
               {category.name}
             </option>
