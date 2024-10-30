@@ -18,7 +18,7 @@ const SimpleMdeReact = dynamic(() => import("react-simplemde-editor"), {
 });
 
 const EditPost = ({ post }: { post: any }) => {
-  const [categories, setCategories] = useState<Category[]>();
+  const [categories, setCategories] = useState<any[]>();
   const [error, setError] = useState("");
   //   console.log(post);
   const [images, setImages] = useState<string[] | undefined>([
