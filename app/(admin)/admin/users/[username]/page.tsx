@@ -3,7 +3,7 @@ import EditUser from "./EditUser";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { notFound } from "next/navigation";
 
-const page = async ({ params }: Params) => {
+const page = async ({ params }: any) => {
   const { username } = params;
   const user = await getUsername(username);
   if (!user) return notFound();
