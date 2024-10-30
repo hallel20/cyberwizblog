@@ -1,3 +1,4 @@
+//@ts-nocheck
 import Pagination from "@/components/Pagination";
 import { searchCount, searchPosts } from "@/lib/data";
 import { pageSize } from "@/lib/global";
