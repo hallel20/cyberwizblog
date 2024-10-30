@@ -1,3 +1,4 @@
+//@ts-nocheck
 import DOMPurify from "isomorphic-dompurify";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { getPost } from "@/lib/data";
