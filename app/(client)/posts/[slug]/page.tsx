@@ -6,6 +6,7 @@ import md5 from "md5";
 import { getServerSession } from "next-auth";
 import { newComment } from "@/lib/actions";
 import Comment from "./SubmitComment";
+import Image from "next/image";
 
 export default async function SinglePost({ params }: Params) {
   const { slug } = params; // Get the post ID from the URL
@@ -50,7 +51,9 @@ export default async function SinglePost({ params }: Params) {
         {/* Post Image */}
         {post.images && (
           <div className="my-6">
-            <img
+            <Image
+              width="200"
+              height="200"
               src={post.images[0].url}
               alt="Post Image"
               className="w-full rounded-md"
@@ -68,7 +71,9 @@ export default async function SinglePost({ params }: Params) {
 
         {/* Author Box */}
         <div className="mt-8 bg-gray-100 p-4 rounded-md flex items-center">
-          <img
+          <Image
+            width="200"
+            height="200"
             src={`https://www.gravatar.com/avatar/${md5(post.user.email)}`}
             alt={post.user.firstname + " " + post.user.lastname}
             className="h-16 w-16 rounded-full mr-4"

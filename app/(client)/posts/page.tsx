@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import PostActions from "./PostActions";
 import Pagination from "@/components/Pagination";
 import { pageSize } from "@/lib/global";
+import Image from "next/image";
 
 const page = async ({ searchParams }: any) => {
   const page = `${searchParams.page || 1}`;
@@ -29,7 +30,9 @@ const page = async ({ searchParams }: any) => {
           >
             {/* Thumbnail */}
             {post.images[0] && (
-              <img
+              <Image
+                width="200"
+                height="200"
                 src={post.images[0].url} // Assuming each image object has a `url` field
                 alt={post.title}
                 className="w-full h-48 object-cover rounded mb-4"

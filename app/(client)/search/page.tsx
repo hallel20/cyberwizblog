@@ -5,6 +5,7 @@ import { marked } from "marked";
 import { FaSearch } from "react-icons/fa";
 import PostActions from "../posts/PostActions";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function page({ searchParams }: any) {
   const query = searchParams.q;
@@ -33,7 +34,9 @@ export default async function page({ searchParams }: any) {
           >
             {/* Thumbnail */}
             {post.images[0] && (
-              <img
+              <Image
+                width="400"
+                height="400"
                 src={post.images[0].url} // Assuming each image object has a `url` field
                 alt={post.title}
                 className="w-full h-48 object-cover rounded mb-4"

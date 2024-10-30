@@ -17,7 +17,7 @@ export default async function Login({ searchParams }: any) {
         <h2 className="text-3xl font-bold text-center mb-6">Log In</h2>
         <LoginForm next={searchParams.next} />
         <p className="mt-4 text-center text-gray-600">
-          Don't have an account? {"  "}
+          Don&apos;t have an account? {"  "}
           <Link href="/auth/signup" className="text-blue-600 hover:underline">
             Sign Up
           </Link>
