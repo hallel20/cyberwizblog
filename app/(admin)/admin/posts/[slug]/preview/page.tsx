@@ -115,7 +115,7 @@ export default async function SinglePost({ params }: any) {
 
           {/* Existing Comments */}
           <div className="space-y-4">
-            {post.comments.map((comment, idx) => (
+            {post.comments.map((comment: any, idx: number) => (
               <div key={idx} className="bg-gray-100 p-4 rounded-md">
                 <p className="font-bold">{comment.user.username}</p>
                 <p className="text-gray-700">{comment.content}</p>
