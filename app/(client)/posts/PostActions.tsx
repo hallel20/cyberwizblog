@@ -1,12 +1,11 @@
 "use client";
 import DeletePost from "@/app/(admin)/admin/posts/DeletePost";
-import { Post } from "@prisma/client";
 import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-const PostActions = ({ post }: { post: Post }) => {
+const PostActions = ({ post }: { post: any }) => {
   const [session, setSession] = useState<Session | null>();
 
   useEffect(() => {
