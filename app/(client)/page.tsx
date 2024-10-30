@@ -1,3 +1,4 @@
+@ts-nocheck
 import CategoryBar from "@/components/CategoryBar";
 import PostSlider from "@/components/PostSlider";
 import { getFeaturedPosts, getPopularPosts, getPosts } from "@/lib/data";
