@@ -6,7 +6,6 @@ import UploadImage from "@/components/UploadImage";
 import { updatePost } from "@/lib/actions";
 import { getCategories } from "@/lib/data";
 import { PostFormType } from "@/lib/formTypes";
-import { Category, PostStatus } from "@prisma/client";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
@@ -112,7 +111,7 @@ const EditPost = ({ post }: { post: any }) => {
                 {...register("categoryId")}
                 className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {categories?.map((category) => (
+                {categories?.map((category: any) => (
                   <option value={category.id} key={category.id}>
                     {category.name}
                   </option>
