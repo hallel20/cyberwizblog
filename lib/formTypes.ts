@@ -1,4 +1,3 @@
-import { PostStatus, Role } from "@prisma/client";
 
 export interface PostFormType {
     title: string;
@@ -6,7 +5,7 @@ export interface PostFormType {
     categoryId: string;
     tags: string;
     image: string;
-    status: PostStatus;
+    status: any;
     slug?: string
   }
 
@@ -25,7 +24,7 @@ export interface SignUpForm {
     password: string;
     newPassword?: string;
     confirmPassword: string;
-    role?: Role
+    role?: any
   }
   
 export interface CommentForm {
