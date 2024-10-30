@@ -15,8 +15,16 @@ const nextConfig = {
         protocol: "https",
       },
       {
-        hostname: "via.placeholder.com",
+        hostname: "localhost",
+        protocol: "http",
+      },
+      {
+        hostname: "upload.cyberwizdev.com.ng",
         protocol: "https",
+      },
+      {
+        hostname: "upload.cyberwizdev.com.ng",
+        protocol: "http",
       },
     ],
   },

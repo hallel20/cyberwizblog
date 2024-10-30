@@ -6,6 +6,8 @@ import { FaCamera } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import Spinner from "./Spinner";
 import { MdClose } from "react-icons/md";
+import { host } from "@/lib/global";
+import { apiKey } from "@/lib/key";
 
 interface Props {
   setImages: Dispatch<SetStateAction<string[] | undefined>>;
@@ -28,30 +30,33 @@ const ImageUploadModal = ({ setImages, single }: Props) => {
     let image = new FormData();
     const files = e.currentTarget.files!;
     image.append("image", files[0]);
+
     try {
       setLoading(true);
-      const res: any = await axios.post("/api/uploads", image, {
+
+      // Send request to the external upload server with API key
+      const res: any = await axios.post(`${host}/upload/`, image, {
         headers: {
           "Content-Type": "multipart/form-data",
+          "x-api-key": apiKey, // Add the API key here
         },
       });
-      //   console.log(res);
+
       if (res.status === 200) {
-        const url = res.data;
-        // console.log(res.data);
+        const url = res.data.url; // Assuming the server response contains the URL in `res.data.url`
         const newUrls = urls ? [...urls, url] : [url];
         setUrls(newUrls);
       } else if (res.status === 400) {
         setError(res.data.error);
       } else {
-        setError("Something went wrong, Please try again!");
+        setError("Something went wrong, please try again!");
       }
       setLoading(false);
       setTimeout(() => {
         setError("");
       }, 4000);
     } catch (ex) {
-      setError("Something went wrong, Please try again!");
+      setError("Something went wrong, please try again!");
       setLoading(false);
       setTimeout(() => {
         setError("");
@@ -60,16 +65,24 @@ const ImageUploadModal = ({ setImages, single }: Props) => {
   };
 
   const handleRemove = async (image: string) => {
-    const newUrls = urls && urls.filter((url) => image != url);
+    const data = new FormData();
+    data.append("image", image);
+    const newUrls = urls && urls.filter((url) => image !== url);
     try {
       setUrls(newUrls);
-      await axios.post("/api/uploads/delete", { image });
+
+      // Send delete request to the external upload server with API key
+      await axios.post(`${host}/upload/delete`, data, {
+        headers: {
+          "x-api-key": apiKey, // Add the API key here
+          "Content-Type": "Application/JSON",
+        },
+      });
     } catch (ex) {
-      setUrls(urls);
+      setUrls(urls); // Revert to previous URLs if there's an error
       console.log(ex);
     }
   };
-  //   console.log(urls);
 
   return (
     <>

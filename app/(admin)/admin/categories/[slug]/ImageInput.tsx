@@ -1,6 +1,8 @@
 "use client";
 import ImageUploadModal from "@/components/reusable/ImageUploadModal";
 import OverlayModal from "@/components/reusable/OverlayModal";
+import { host } from "@/lib/global";
+import { apiKey } from "@/lib/key";
 import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
@@ -11,11 +13,18 @@ const ImageInput = ({ defaultImage }: { defaultImage: string }) => {
   const [open, setOpen] = useState(false);
 
   const handleDelete = async () => {
+    const data = new FormData();
     const image = images![0];
+    data.append("image", image);
     console.log("Deleting....");
     try {
       setImages([]);
-      await axios.post("/api/uploads/delete", { image });
+      await axios.post(`${host}/upload/delete`, data, {
+        headers: {
+          "x-api-key": apiKey, // Add the API key here
+          "Content-Type": "Application/JSON",
+        },
+      });
     } catch (ex) {
       setImages(images);
       console.log(ex);

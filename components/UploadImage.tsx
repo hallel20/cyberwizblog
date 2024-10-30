@@ -7,6 +7,7 @@ import Spinner from "@/components/reusable/Spinner";
 import { MdClose } from "react-icons/md";
 import { FaCopy } from "react-icons/fa";
 import { host } from "@/lib/global";
+import { apiKey } from "@/lib/key";
 
 const UploadImage = () => {
   const [urls, setUrls] = useState<string[]>();
@@ -15,60 +16,71 @@ const UploadImage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    let image = new FormData();
-    const files = e.currentTarget.files!;
-    image.append("image", files[0]);
-    try {
-      setLoading(true);
-      const res: any = await axios.post("/api/uploads", image, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      //   console.log(res);
-      if (res.status === 200) {
-        const url = res.data;
-        // console.log(res.data);
-        const newUrls = urls ? [...urls, url] : [url];
-        setUrls(newUrls);
-      } else if (res.status === 400) {
-        setError(res.data.error);
-      } else {
-        setError("Something went wrong, Please try again!");
-      }
-      setLoading(false);
-      setTimeout(() => {
-        setError("");
-      }, 4000);
-    } catch (ex) {
-      setError("Something went wrong, Please try again!");
-      setLoading(false);
-      setTimeout(() => {
-        setError("");
-      }, 4000);
-    }
-  };
-
   const handleCopy = (image: string) => {
-    navigator.clipboard.writeText(host + image);
+    navigator.clipboard.writeText(image);
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
     }, 2000);
   };
 
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    let image = new FormData();
+    const files = e.currentTarget.files!;
+    image.append("image", files[0]);
+
+    try {
+      setLoading(true);
+
+      // Send request to the external upload server with API key
+      const res: any = await axios.post(`${host}/upload/`, image, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "x-api-key": apiKey, // Add the API key here
+        },
+      });
+
+      if (res.status === 200) {
+        const url = res.data.url; // Assuming the server response contains the URL in `res.data.url`
+        const newUrls = urls ? [...urls, url] : [url];
+        setUrls(newUrls);
+      } else if (res.status === 400) {
+        setError(res.data.error);
+      } else {
+        setError("Something went wrong, please try again!");
+      }
+      setLoading(false);
+      setTimeout(() => {
+        setError("");
+      }, 4000);
+    } catch (ex) {
+      setError("Something went wrong, please try again!");
+      setLoading(false);
+      setTimeout(() => {
+        setError("");
+      }, 4000);
+    }
+  };
+
   const handleRemove = async (image: string) => {
-    const newUrls = urls && urls.filter((url) => image != url);
+    const data = new FormData();
+    data.append("image", image);
+    const newUrls = urls && urls.filter((url) => image !== url);
     try {
       setUrls(newUrls);
-      await axios.post("/api/uploads/delete", { image });
+
+      // Send delete request to the external upload server with API key
+      await axios.post(`${host}/upload/delete`, data, {
+        headers: {
+          "x-api-key": apiKey, // Add the API key here
+          "Content-Type": "Application/JSON",
+        },
+      });
     } catch (ex) {
-      setUrls(urls);
+      setUrls(urls); // Revert to previous URLs if there's an error
       console.log(ex);
     }
   };
-  //   console.log(urls);
 
   return (
     <div className="w-10/12 min-h-96 bg-white p-5 rounded-lg relative flex flex-col gap-4">
@@ -107,7 +119,7 @@ const UploadImage = () => {
                   "Copied"
                 ) : (
                   <span>
-                    {host + image} <FaCopy size="10" />
+                    {image} <FaCopy size="10" />
                   </span>
                 )}
               </p>
