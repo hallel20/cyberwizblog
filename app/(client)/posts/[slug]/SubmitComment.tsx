@@ -3,11 +3,10 @@
 import Spinner from "@/components/reusable/Spinner";
 import { newComment } from "@/lib/actions";
 import { CommentForm } from "@/lib/formTypes";
-import { Post } from "@prisma/client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-const Comment = ({ post }: { post: Post }) => {
+const Comment = ({ post }: { post: any }) => {
   const [error, setError] = useState<string>();
   const [success, setSuccess] = useState<string>();
   const [loading, setLoading] = useState(false);
