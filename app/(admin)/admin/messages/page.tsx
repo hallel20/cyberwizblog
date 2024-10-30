@@ -1,40 +1,33 @@
-import { categoryCount, getCategories } from "@/lib/data";
-import CategoryModal from "./Modal";
-import Link from "next/link";
-import DeleteCategory from "./DeleteCategory";
-import { FaSearch } from "react-icons/fa";
 import Pagination from "@/components/Pagination";
+import { approveComment, rejectComment } from "@/lib/actions";
+import {
+  commentCount,
+  getAllComments,
+  getMessageCount,
+  getMessages,
+} from "@/lib/data";
 import { pageSize } from "@/lib/global";
+import { FaSearch } from "react-icons/fa";
+import DeleteMessage from "./DeleteMessage";
 
 const page = async ({ searchParams }: any) => {
-  const total = await categoryCount();
+  const total = await getMessageCount();
   const page = `${searchParams.page || 1}`;
-  const categories = await getCategories(page);
-  // console.log(categories);
+  const messages = await getMessages(page);
 
-  if (!categories)
+  if (!messages || messages.length == 0)
     return (
-      <>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-700">
-            Manage Categories
-          </h2>
-          <CategoryModal />
-        </div>
-        <div className="container w-screen h-screen flex justify-center items-center mx-auto">
-          <p className="text-center text-3xl font-bold">
-            <FaSearch size="30px" /> Oops. There are no posts yet!
-          </p>
-        </div>
-      </>
+      <div className="container w-screen h-screen flex justify-center items-center mx-auto">
+        <p className="text-center flex items-center text-3xl font-bold">
+          <FaSearch size="30px" /> Oops. There are no messages yet!
+        </p>
+      </div>
     );
-
   return (
-    <div className="container mx-auto py-10">
+    <div className="container py-10">
       {/* Table Header */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-gray-700">Manage Categories</h2>
-        <CategoryModal />
+        <h2 className="text-2xl font-bold text-gray-700">Manage Messages</h2>
       </div>
 
       {/* Responsive Table */}
@@ -43,16 +36,13 @@ const page = async ({ searchParams }: any) => {
           <thead>
             <tr>
               <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Category Name
+                Name
               </th>
               <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Description
+                Email
               </th>
               <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Post Count
-              </th>
-              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Slug
+                Message
               </th>
               <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Actions
@@ -61,37 +51,26 @@ const page = async ({ searchParams }: any) => {
           </thead>
           <tbody>
             {/* Row 1 */}
-            {categories.map((category: any) => (
-              <tr key={category.id}>
+            {messages.map((message: any) => (
+              <tr key={message.id}>
                 <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <p className="text-gray-900 whitespace-no-wrap">
-                    {category.name}
+                    {message.name}
                   </p>
                 </td>
                 <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <p className="text-gray-600 whitespace-no-wrap">
-                    {category.description}
+                    {message.email}
                   </p>
                 </td>
                 <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <p className="text-gray-600 whitespace-no-wrap">
-                    {category._count.posts} posts
-                  </p>
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <p className="text-gray-600 whitespace-no-wrap">
-                    {category.slug}
+                    {message.message}
                   </p>
                 </td>
 
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                  <Link
-                    href={`/admin/categories/${category.slug}`}
-                    className="text-blue-500 hover:text-blue-700 mr-3"
-                  >
-                    Edit
-                  </Link>
-                  <DeleteCategory name={category.name} id={category.id} />
+                <td className="px-5 py-5 border-b flex border-gray-200 bg-white text-sm text-center">
+                  <DeleteMessage name={message.message} id={message.id} />
                 </td>
               </tr>
             ))}

@@ -43,29 +43,30 @@ const EditPost = ({ post }: { post: any }) => {
   }, []);
 
   return (
-    <form>
-      <div className="flex flex-col p-6 font-sans">
+    <form className="bg-white rounded-lg shadow-lg p-6 font-sans max-w-4xl mx-auto">
+      <div className="flex flex-col gap-4">
         {/* Header with title, save, and preview buttons */}
-        <header className="flex justify-between items-center pb-4 border-b border-gray-300">
+        <header className="flex justify-between items-center pb-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
-            <Link href="/admin/posts/">
-              <button className="bg-gray-200 mb-4 p-2 rounded-lg">
-                <FaArrowCircleLeft size="30" />
-              </button>
+            <Link
+              href="/admin/posts"
+              className="bg-gray-200 p-2 rounded-lg hover:bg-gray-300"
+            >
+              <FaArrowCircleLeft size="30" />
             </Link>
             <input
               type="text"
-              className="text-3xl font-bold border-none outline-none focus:outline-none"
+              placeholder="Enter Title"
+              className="text-3xl font-bold w-full p-2 border-b border-gray-300 focus:border-gray-400 outline-none"
               {...register("title")}
             />
           </div>
-          {/* <h1 >{post!.title}</h1> */}
-          <div className="flex">
+          <div className="flex gap-2">
             <button
+              type="button"
               onClick={handleSubmit(async (data) => {
                 try {
                   setLoading(true);
-                  console.log(data);
                   await updatePost(data, post.id);
                   setLoading(false);
                 } catch (ex) {
@@ -73,28 +74,29 @@ const EditPost = ({ post }: { post: any }) => {
                   setLoading(false);
                 }
               })}
-              className="flex gap-2 bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600"
+              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-200"
             >
               Save {loading && <Spinner />}
             </button>
             <Link
               href={`/admin/posts/${post.slug}/preview`}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
             >
               Preview
             </Link>
           </div>
         </header>
 
+        {/* Main content editor */}
         <div className="flex mt-6">
-          {/* Main content editor */}
-          <div className="flex-1 mr-8">
+          <div className="w-2/3 mr-8">
             <Controller
               name="content"
               control={control}
               render={({ field }) => (
                 <SimpleMdeReact
                   placeholder="Edit your post here..."
+                  className="w-full p-2 rounded border border-gray-200 focus:ring-2 focus:ring-blue-500"
                   {...field}
                 />
               )}
@@ -102,14 +104,13 @@ const EditPost = ({ post }: { post: any }) => {
             <UploadImage />
           </div>
 
-          {/* Sidebar with options */}
+          {/* Sidebar */}
           <aside className="w-1/3 space-y-6">
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Category</label>
-
               <select
                 {...register("categoryId")}
-                className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
               >
                 {categories?.map((category: any) => (
                   <option value={category.id} key={category.id}>
@@ -125,17 +126,9 @@ const EditPost = ({ post }: { post: any }) => {
                 type="text"
                 {...register("tags")}
                 placeholder="Add tags"
-                className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
               />
             </div>
-
-            {/* <div className="flex flex-col">
-            <label className="font-semibold mb-2">Publish Date</label>
-            <input
-              type="date"
-              className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div> */}
 
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Featured Image</label>
@@ -145,7 +138,6 @@ const EditPost = ({ post }: { post: any }) => {
                     type="hidden"
                     defaultValue={images[0]}
                     {...register("image")}
-                    className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <Image
                     src={images[0]}
@@ -160,8 +152,11 @@ const EditPost = ({ post }: { post: any }) => {
             <ImageUploadModal setImages={setImages} single />
 
             <div className="flex flex-col">
-              <label className="font-semibold mb-2">SEO Settings</label>
-              <select {...register("status")}>
+              <label className="font-semibold mb-2">Status</label>
+              <select
+                {...register("status")}
+                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+              >
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
               </select>

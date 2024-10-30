@@ -49,6 +49,17 @@ export const categoryCount = async() => {
     }
 }
 
+export const categoryPostCount = async(category: string) => {
+    const DBCategory = await prisma.category.findUnique({where: {slug: category}})
+    if(!DBCategory) throw new Error("Category not found!")
+    try {
+        const count = await prisma.category.count({where: {id: DBCategory.id}})
+        return count
+    } catch(ex) {
+        console.log(ex)
+    }
+}
+
 export const userCount = async() => {
     try {
         const count = await prisma.user.count()
@@ -83,9 +94,44 @@ export const getPosts = async(page: string) => {
     }
 } 
 
+export const getCategoryPosts = async(page: string, category: any) => {
+    const DBCategory = await prisma.category.findUnique({where: {slug: category}})
+    if(!DBCategory) throw new Error("Category not found!")
+    try {
+    const posts = await prisma.post.findMany({
+        include: {_count: true, user: true, category: {select: {name: true}}, images: true}, 
+        take: pageSize, 
+        skip: pageSize * (parseInt(page) - 1),
+        orderBy: {createdAt: "desc"},
+        where: {categoryId: DBCategory.id}
+    })
+    return posts
+    }
+    catch (ex) {
+        console.log(ex)
+        // throw new Error("Failed to fetch posts")
+    }
+} 
+export const getClientPosts = async(page: string) => {
+    try {
+    const posts = await prisma.post.findMany({
+        include: {_count: true, user: true, category: {select: {name: true}}, images: true}, 
+        take: pageSize, 
+        where: {status: "published"},
+        skip: pageSize * (parseInt(page) - 1),
+        orderBy: {createdAt: "desc"}
+    })
+    return posts
+    }
+    catch (ex) {
+        console.log(ex)
+        // throw new Error("Failed to fetch posts")
+    }
+} 
+
 export const getFeaturedPosts = async() => {
     try {
-    const posts = await prisma.post.findMany({where: {categoryId: 1}, include: {_count: true, user: true, category: {select: {name: true}}, images: true}})
+    const posts = await prisma.post.findMany({where: {categoryId: 1, status: "published"}, include: {_count: true, user: true, category: {select: {name: true}}, images: true}})
     return posts
     }
     catch (ex) {
@@ -97,6 +143,7 @@ export const getFeaturedPosts = async() => {
 export const getPopularPosts = async() => {
     try {
     const posts = await prisma.post.findMany({
+        where: {status: "published"},
         include: {_count: true, category: {select: {name: true}}, images: true}, 
         take: 5,
         orderBy: {comments: {_count: "desc"}}
@@ -213,6 +260,7 @@ export const searchPosts = async(query: string, page: string) => {
               },
             },
           ],
+          status: "published"
         },
         include: {_count: true, user: true, category: {select: {name: true}}, images: true}, 
         take: pageSize, 
@@ -225,3 +273,22 @@ export const searchPosts = async(query: string, page: string) => {
         console.log(ex)
     }
 }
+
+export const getMessages = async(page: string) => {
+    try {
+        const messages = await prisma.contact.findMany({take: pageSize, skip: pageSize * (parseInt(page) - 1)})
+        return messages
+    } catch (ex) {
+        console.log(ex)
+    }
+}
+
+export const getMessageCount = async() => {
+    try {
+        const messages = await prisma.contact.count()
+        return messages
+    } catch (ex) {
+        console.log(ex)
+    }
+}
+

@@ -53,8 +53,8 @@ export default async function SinglePost({ params }: any) {
         {post.images && (
           <div className="my-6">
             <Image
-              width="200"
-              height="200"
+              width="1000"
+              height="1000"
               src={post.images[0].url}
               alt="Post Image"
               className="w-full rounded-md"
@@ -63,11 +63,13 @@ export default async function SinglePost({ params }: any) {
         )}
 
         {/* Markdown Content */}
-        <div className="prose">
-          <div
-            className="text-gray-700 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: cleanBody }}
-          />
+        <div className="mx-auto">
+          <div className="prose">
+            <div
+              className="text-gray-700 w-full"
+              dangerouslySetInnerHTML={{ __html: cleanBody }}
+            />
+          </div>
         </div>
 
         {/* Author Box */}

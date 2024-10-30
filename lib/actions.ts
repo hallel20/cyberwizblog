@@ -269,3 +269,13 @@ export const contact = async(data: ContactFormData) => {
     console.log(ex)
   }
 }
+
+export const deleteMessage = async(id: number) => {
+  try {
+    await prisma.contact.delete({where: {id}})
+    revalidatePath("admin/messages")
+  } catch (ex) {
+    console.log(ex)
+    throw new Error("Failed to delete message!")
+  }
+}

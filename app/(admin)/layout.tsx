@@ -8,6 +8,8 @@ import "easymde/dist/easymde.min.css";
 import Logout from "@/components/Logout";
 import "../globals.css";
 import { getUser } from "@/lib/data";
+import Link from "next/link";
+import { FaEye } from "react-icons/fa6";
 
 export const metadata: Metadata = {
   title: "Manage - Cyberwizdev blog",
@@ -29,30 +31,39 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
       <body>
         <div className="min-h-screen flex">
           {/* Sidebar */}
-          <aside className="bg-blue-950 text-white w-60 h-screen p-6 lg:fixed">
-            <div className="text-center mb-10">
-              <Image
-                src={
-                  `https://www.gravatar.com/avatar/${emailHash}` ||
-                  "/noavatar.png"
-                }
-                width="250"
-                height="250"
-                alt=""
-                className="w-24 h-24 object-cover mx-auto rounded-full"
-              />
-              <h2 className="text-xl mt-4">{session?.user?.name}</h2>
-              <p className="text-gray-400">{session?.user?.email}</p>
+          <aside className="bg-blue-950 text-white text-sm w-60 h-screen py-6 px-3 lg:fixed flex flex-col justify-between">
+            <div>
+              <div className="text-center mb-10">
+                <Image
+                  src={
+                    `https://www.gravatar.com/avatar/${emailHash}` ||
+                    "/noavatar.png"
+                  }
+                  width="250"
+                  height="250"
+                  alt=""
+                  className="w-24 h-24 object-cover mx-auto rounded-full"
+                />
+                <h2 className="text-xl mt-4">{session?.user?.name}</h2>
+                <p className="text-gray-400">{session?.user?.email}</p>
+              </div>
+              <DashboardNav />
             </div>
-            <DashboardNav />
+            <div>
+              <Link href="/">
+                <div className="flex items-center px-3 gap-2 py-2 mb-1 w-full hover:bg-blue-900 rounded-md">
+                  <FaEye size="15" />
+                  Visit Site
+                </div>
+              </Link>
+            </div>
           </aside>
-          <aside className="bg-blue-900 text-white w-60 h-screen p-6 hidden lg:block"></aside>
           {/* Main Dashboard */}
-          <main className="flex-1 p-6">
+          <main className="ms-0 lg:ms-60 p-6">
             <div className="flex justify-end">
               <Logout />
             </div>
-            {children}
+            <div className="w-full">{children}</div>
           </main>
         </div>
       </body>

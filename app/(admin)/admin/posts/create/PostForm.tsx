@@ -62,15 +62,14 @@ const PostForm = () => {
 
   return (
     <form
+      className="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto"
       onSubmit={handleSubmit(async (data) => {
         try {
-          console.log(data);
           setLoading(true);
           await createPost(data);
           setLoading(false);
           router.push("/admin/posts/");
         } catch (ex) {
-          console.log(ex);
           setError("Something went wrong, please try again!");
           setLoading(false);
         }
@@ -78,8 +77,9 @@ const PostForm = () => {
     >
       {/* Handle Errors */}
       {error && (
-        <p className="text-red-500 font-semibold text-center">{error}</p>
+        <p className="text-red-500 font-semibold text-center mb-4">{error}</p>
       )}
+
       {/* Post Title */}
       <div className="mb-4">
         <label htmlFor="title" className="block text-gray-700 font-bold mb-2">
@@ -99,16 +99,14 @@ const PostForm = () => {
         <label htmlFor="image" className="block text-gray-700 font-bold mb-2">
           Featured Image
         </label>
-        {images?.length == 1 && (
+        {images?.length === 1 && (
           <>
             <Image
               src={images[0]}
               alt=""
-              width="200"
-              height="200"
-              objectFit="cover"
-              objectPosition="top"
-              className="rounded-lg"
+              width={200}
+              height={200}
+              className="rounded-lg object-cover object-top"
             />
             <input type="hidden" {...register("image")} value={images[0]} />
           </>
@@ -126,7 +124,7 @@ const PostForm = () => {
           control={control}
           render={({ field }) => (
             <SimpleMDE
-              className="text-black"
+              className="w-full"
               placeholder="Write your content here..."
               {...field}
             />
@@ -151,7 +149,7 @@ const PostForm = () => {
           <option value="" disabled>
             ---
           </option>
-          {categories?.map((category: any, i: number) => (
+          {categories?.map((category) => (
             <option value={category.id} key={category.id}>
               {category.name}
             </option>
@@ -161,13 +159,13 @@ const PostForm = () => {
 
       {/* Slug */}
       <div className="mb-4">
-        <label htmlFor="tags" className="block text-gray-700 font-bold mb-2">
+        <label htmlFor="slug" className="block text-gray-700 font-bold mb-2">
           Slug
         </label>
         {slugTaken && <div className="text-red-500 mb-2">Slug is taken!</div>}
         <div
-          className={`w-full flex items-center px-4 py-2 border border-gray-300 rounded-lg ring-1 ${
-            slugTaken ? "ring-red-500" : ""
+          className={`w-full flex items-center px-4 py-2 border border-gray-300 rounded-lg ${
+            slugTaken ? "ring-1 ring-red-500" : ""
           }`}
         >
           <input
@@ -177,15 +175,11 @@ const PostForm = () => {
             placeholder="Enter category slug (URL-friendly)"
             className="w-full focus:outline-none"
           />
-          <div className="">
+          <div className="ml-2">
             {!slugTaken ? (
-              <div className="text-green-500">
-                <IoMdCheckmarkCircle size="25" />
-              </div>
+              <IoMdCheckmarkCircle className="text-green-500" size="25" />
             ) : (
-              <div className="text-red-500">
-                <FaXmark size="25" />
-              </div>
+              <FaXmark className="text-red-500" size="25" />
             )}
           </div>
         </div>
@@ -223,11 +217,11 @@ const PostForm = () => {
       </div>
 
       {/* Submit Button */}
-      <div className="flex justify-end">
+      <div className="flex justify-end mt-4">
         <button
           type="submit"
           disabled={loading || slugTaken}
-          className="bg-blue-500 disabled:cursor-not-allowed disabled:bg-blue-300 flex items-center justify-center text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600"
+          className="bg-blue-500 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-200 disabled:bg-blue-300 disabled:cursor-not-allowed flex items-center"
         >
           Create Post {loading && <Spinner />}
         </button>
