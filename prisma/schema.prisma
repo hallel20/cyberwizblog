@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+//Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  username  String    @unique @db.VarChar(255)
+  email     String    @unique
+  firstname String    @db.VarChar(255)
+  lastname  String    @db.VarChar(255)
+  bio       String?   @db.Text()
+  password  String
+  role      Role      @default(user)
+  images    Image[]
+  comments  Comment[]
+  posts     Post[]
+}
+
+model Image {
+  id     Int    @id @default(autoincrement())
+  url    String @db.VarChar(255)
+  userId Int?
+  user   User?  @relation(fields: [userId], references: [id])
+  postId Int?
+  post   Post?  @relation(fields: [postId], references: [id])
+}
+
+model Category {
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(255)
+  slug        String  @unique @db.VarChar(255)
+  description String? @db.Text()
+  image       String  @db.VarChar(255)
+  posts       Post[]
+}
+
+model Post {
+  id         Int        @id @default(autoincrement())
+  title      String     @db.VarChar(255)
+  slug       String     @unique @db.VarChar(255)
+  content    String     @db.Text()
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  tags       String     @db.VarChar(255)
+  userId     Int
+  user       User       @relation(fields: [userId], references: [id])
+  categoryId Int
+  category   Category   @relation(fields: [categoryId], references: [id])
+  images     Image[]
+  comments   Comment[]
+  status     PostStatus
+}
+
+model Comment {
+  id        Int           @id @default(autoincrement())
+  userId    Int
+  user      User          @relation(fields: [userId], references: [id])
+  content   String        @db.Text()
+  createdAt DateTime      @default(now())
+  postId    Int           @db.Int()
+  post      Post          @relation(fields: [postId], references: [id])
+  status    CommentStatus @default(pending)
+}
+
+model Contact {
+  id      Int    @id @default(autoincrement())
+  name    String @db.VarChar(255)
+  email   String @db.VarChar(255)
+  message String @db.Text()
+}
+
+enum PostStatus {
+  published
+  draft
+}
+
+enum CommentStatus {
+  pending
+  approved
+  rejected
+}
+
+enum Role {
+  admin
+  user
+}
