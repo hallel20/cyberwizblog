@@ -38,7 +38,7 @@ export default async function SinglePost({ params }: any) {
 
         {/* Tags */}
         <div className="flex flex-wrap gap-2 mb-6">
-          {post.tags.split(",").map((tag, index) => (
+          {post.tags.split(",").map((tag: string, index: number) => (
             <span
               key={index}
               className="bg-blue-100 text-blue-500 px-2 py-1 rounded-full text-xs"
