@@ -70,7 +70,7 @@ const page = async () => {
               </thead>
               <tbody>
                 {/* Row 1 */}
-                {posts?.map((post) => (
+                {posts?.map((post: any) => (
                   <tr key={post.id}>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
@@ -176,7 +176,7 @@ const page = async () => {
                   </thead>
                   <tbody>
                     {/* Row 1 */}
-                    {comments?.map((comment) => (
+                    {comments?.map((comment: any) => (
                       <tr key={comment.id}>
                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                           <p className="text-gray-900 whitespace-no-wrap">
@@ -245,7 +245,7 @@ const page = async () => {
                 </thead>
                 <tbody>
                   {/* Row 1 */}
-                  {categories?.map((category) => (
+                  {categories?.map((category: any) => (
                     <tr key={category.id}>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p className="text-gray-900 whitespace-no-wrap">
