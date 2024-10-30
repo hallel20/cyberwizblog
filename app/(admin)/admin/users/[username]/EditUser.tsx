@@ -4,7 +4,6 @@ import Spinner from "@/components/reusable/Spinner";
 import { updateUser } from "@/lib/actions";
 import { getUser, getUsername } from "@/lib/data";
 import { SignUpForm } from "@/lib/formTypes";
-import { User } from "@prisma/client";
 import debounce from "lodash.debounce";
 import { notFound, useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -12,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { FaXmark } from "react-icons/fa6";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 
-const EditUser = ({ user }: { user: User }) => {
+const EditUser = ({ user }: { user: any }) => {
   const [usernameTaken, setUsernameTaken] = useState<boolean>();
   const [emailTaken, setEmailTaken] = useState<boolean>();
   const [error, setError] = useState<string>();
