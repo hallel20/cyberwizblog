@@ -99,7 +99,7 @@ export default async function SinglePost({ params }: any) {
           {/* Existing Comments */}
           <div className="space-y-4">
             {post.comments.map(
-              (comment, idx) =>
+              (comment: any, idx: number) =>
                 comment.status == "approved" && (
                   <div key={idx} className="bg-gray-100 p-4 rounded-md">
                     <p className="font-bold">{comment.user.username}</p>
