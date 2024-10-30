@@ -8,7 +8,7 @@ import { newComment } from "@/lib/actions";
 import Comment from "./SubmitComment";
 import Image from "next/image";
 
-export default async function SinglePost({ params }: Params) {
+export default async function SinglePost({ params }: any) {
   const { slug } = params; // Get the post ID from the URL
   const post = await getPost(slug);
 
