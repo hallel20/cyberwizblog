@@ -38,7 +38,10 @@ const Header = () => {
         <Link href="/" className="md:text-3xl text-xl font-bold">
           Cyberwizdev Blog
         </Link>
+        <div className="hidden lg:flex">
         <Search />
+        </div>
+        
         <nav className="space-x-4 hidden md:block">
           {links.map((link, i) => (
             <Link key={i} href={link.path} className="hover:text-blue-300">
