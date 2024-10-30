@@ -5,12 +5,11 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import Link from "next/link";
-import { Post } from "@prisma/client";
 import { marked } from "marked";
 import Image from "next/image";
 
 type PostSliderProps = {
-  posts: Post[];
+  posts: any[];
 };
 
 export default function PostSlider({ posts }: PostSliderProps) {
@@ -24,7 +23,7 @@ export default function PostSlider({ posts }: PostSliderProps) {
       autoplay={{ delay: 5000 }}
       className="w-full max-w-3xl"
     >
-      {posts.map((post) => (
+      {posts.map((post: any) => (
         <SwiperSlide key={post.id}>
           <div className="relative bg-gray-100 p-6 rounded-lg shadow-lg">
             <Image
