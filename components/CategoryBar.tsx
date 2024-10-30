@@ -1,12 +1,11 @@
 "use client";
 
 import { getCategories } from "@/lib/data";
-import { Category } from "@prisma/client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const CategoryBar = () => {
-  const [categories, setCategories] = useState<Category[]>();
+  const [categories, setCategories] = useState<any[]>();
   useEffect(() => {
     const updateState = async () => {
       const categories = await getCategories();
