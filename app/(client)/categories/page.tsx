@@ -1,4 +1,5 @@
 import { getCategories } from "@/lib/data";
+import { host } from "@/lib/global";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -48,7 +49,7 @@ const page = async () => {
             key={category.id}
           >
             <Image
-              src={category.image}
+              src={`${host}/${category.image}`}
               width="150"
               height="150"
               alt={category.slug}

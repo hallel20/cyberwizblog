@@ -8,6 +8,7 @@ import { getServerSession } from "next-auth";
 import { newComment } from "@/lib/actions";
 import Comment from "./SubmitComment";
 import Image from "next/image";
+import { host } from "@/lib/global";
 
 export default async function SinglePost({ params }: any) {
   const { slug } = params; // Get the post ID from the URL
@@ -55,7 +56,7 @@ export default async function SinglePost({ params }: any) {
             <Image
               width="1000"
               height="1000"
-              src={post.images[0].url}
+              src={`${host}/${post.images[0].url}`}
               alt="Post Image"
               className="w-full rounded-md"
             />

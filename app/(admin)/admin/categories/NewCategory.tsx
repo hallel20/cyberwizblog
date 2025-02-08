@@ -16,6 +16,7 @@ import { IoMdCheckmarkCircle, IoMdCloseCircle } from "react-icons/io";
 import debounce from "lodash.debounce";
 import { getCategory } from "@/lib/data";
 import { FaXmark } from "react-icons/fa6";
+import { host } from "@/lib/global";
 
 export interface CategoryForm {
   name: string;
@@ -172,7 +173,7 @@ const NewCategory = ({
           {images && (
             <>
               <Image
-                src={images[0]}
+                src={`${host}/${images[0]}`}
                 alt=""
                 width="170"
                 height="170"

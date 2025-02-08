@@ -2,6 +2,7 @@
 import CategoryBar from "@/components/CategoryBar";
 import PostSlider from "@/components/PostSlider";
 import { getFeaturedPosts, getPopularPosts, getPosts } from "@/lib/data";
+import { host } from "@/lib/global";
 import { marked } from "marked";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,7 +45,7 @@ export default async function Home() {
                   <Image
                     width="400"
                     height="200"
-                    src={post.images[0].url}
+                    src={`${host}/${post.images[0].url}`}
                     alt="Article"
                     className="rounded-lg mb-2"
                   />
@@ -75,7 +76,7 @@ export default async function Home() {
               {popularPosts?.map((post: any) => (
                 <div className="text-gray-700 flex gap-2" key={post.id}>
                   <Image
-                    src={post.images[0].url}
+                    src={`${host}/${post.images[0].url}`}
                     width="100"
                     height="100"
                     className="rounded-md shadow-sm"
@@ -101,7 +102,7 @@ export default async function Home() {
               {posts?.map((post: any) => (
                 <div className="text-gray-700 flex gap-2" key={post.id}>
                   <Image
-                    src={post.images[0].url}
+                    src={`${host}/${post.images[0].url}`}
                     width="100"
                     height="100"
                     className="rounded-md shadow-sm"

@@ -13,6 +13,7 @@ import { PostFormType } from "@/lib/formTypes";
 import debounce from "lodash.debounce";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 import { FaXmark } from "react-icons/fa6";
+import { host } from "@/lib/global";
 
 const PostForm = () => {
   const [categories, setCategories] = useState<any[]>();
@@ -102,7 +103,7 @@ const PostForm = () => {
         {images?.length === 1 && (
           <>
             <Image
-              src={images[0]}
+              src={`${host}/${images[0]}`}
               alt=""
               width={200}
               height={200}

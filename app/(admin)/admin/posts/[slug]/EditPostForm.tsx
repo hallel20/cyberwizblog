@@ -6,6 +6,7 @@ import UploadImage from "@/components/UploadImage";
 import { updatePost } from "@/lib/actions";
 import { getCategories } from "@/lib/data";
 import { PostFormType } from "@/lib/formTypes";
+import { host } from "@/lib/global";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
@@ -140,7 +141,7 @@ const EditPost = ({ post }: { post: any }) => {
                     {...register("image")}
                   />
                   <Image
-                    src={images[0]}
+                    src={`${host}/${images[0]}`}
                     alt=""
                     width="150"
                     height="150"

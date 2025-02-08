@@ -1,7 +1,7 @@
 //@ts-nocheck
 import Pagination from "@/components/Pagination";
 import { searchCount, searchPosts } from "@/lib/data";
-import { pageSize } from "@/lib/global";
+import { host, pageSize } from "@/lib/global";
 import { marked } from "marked";
 import { FaSearch } from "react-icons/fa";
 import PostActions from "../posts/PostActions";
@@ -38,7 +38,7 @@ export default async function page({ searchParams }: any) {
               <Image
                 width="400"
                 height="400"
-                src={post.images[0].url} // Assuming each image object has a `url` field
+                src={`${host}/${post.images[0].url}`} // Assuming each image object has a `url` field
                 alt={post.title}
                 className="w-full h-48 object-cover rounded mb-4"
               />

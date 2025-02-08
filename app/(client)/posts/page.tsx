@@ -6,7 +6,7 @@ import DeletePost from "../../(admin)/admin/posts/DeletePost";
 import { getServerSession } from "next-auth";
 import PostActions from "./PostActions";
 import Pagination from "@/components/Pagination";
-import { pageSize } from "@/lib/global";
+import { host, pageSize } from "@/lib/global";
 import Image from "next/image";
 
 const page = async ({ searchParams }: any) => {
@@ -34,7 +34,7 @@ const page = async ({ searchParams }: any) => {
               <Image
                 width="200"
                 height="200"
-                src={post.images[0].url} // Assuming each image object has a `url` field
+                src={`${host}/${post.images[0].url}`} // Assuming each image object has a `url` field
                 alt={post.title}
                 className="w-full h-48 object-cover rounded mb-4"
               />

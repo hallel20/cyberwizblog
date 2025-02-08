@@ -8,6 +8,7 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import Link from "next/link";
 import { marked } from "marked";
 import Image from "next/image";
+import { host } from "@/lib/global";
 
 type PostSliderProps = {
   posts: any[];
@@ -28,7 +29,7 @@ export default function PostSlider({ posts }: PostSliderProps) {
         <SwiperSlide key={post.id}>
           <div className="relative bg-gray-100 p-6 rounded-lg shadow-lg">
             <Image
-              src={post.images[0].url}
+              src={`${host}/${post.images[0].url}`}
               alt={post.title}
               width="1000"
               height="1000"
