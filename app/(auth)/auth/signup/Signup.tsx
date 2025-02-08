@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { FaXmark } from "react-icons/fa6";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 
@@ -76,9 +77,11 @@ export default function SignUp() {
               setLoading(true);
               await signUp(data);
               setLoading(false);
+              toast.success("Signup successful!")
               router.replace("/auth/login");
             } catch (ex) {
               setLoading(false);
+              toast.error("Something went wrong, please try again!");
               setError("Something went wrong, please try again!");
             }
           })}

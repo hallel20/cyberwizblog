@@ -1,11 +1,13 @@
 "use client";
 import ImageUploadModal from "@/components/reusable/ImageUploadModal";
 import OverlayModal from "@/components/reusable/OverlayModal";
+import { deleteImage } from "@/lib/actions";
 import { host } from "@/lib/global";
 import { apiKey } from "@/lib/key";
 import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { FaTrashCan } from "react-icons/fa6";
 
 const ImageInput = ({ defaultImage }: { defaultImage: string }) => {
@@ -19,14 +21,16 @@ const ImageInput = ({ defaultImage }: { defaultImage: string }) => {
     console.log("Deleting....");
     try {
       setImages([]);
-      await axios.post(`${host}/upload/delete`, data, {
-        headers: {
-          "x-api-key": apiKey, // Add the API key here
-          "Content-Type": "Application/JSON",
-        },
-      });
-    } catch (ex) {
+      const ok = await deleteImage(image);
+      if (!ok) {
+        toast.error("Error deleting image! Please try again.");
+        setImages(images);
+      } else {        
+        toast.success("Image deleted successfully!");
+      }
+    } catch (ex: any) {
       setImages(images);
+      toast.error(ex.message)
       console.log(ex);
     }
   };
@@ -43,7 +47,7 @@ const ImageInput = ({ defaultImage }: { defaultImage: string }) => {
               onClick={() => setOpen(true)}
             />
             <Image
-              src={images[0]}
+              src={`${host}/${images[0]}`}
               alt=""
               width="170"
               height="170"

@@ -8,6 +8,8 @@ import { MdClose } from "react-icons/md";
 import { FaCopy } from "react-icons/fa";
 import { host } from "@/lib/global";
 import { apiKey } from "@/lib/key";
+import { deleteImage } from "@/lib/actions";
+import toast from "react-hot-toast";
 
 const UploadImage = () => {
   const [urls, setUrls] = useState<string[]>();
@@ -33,28 +35,27 @@ const UploadImage = () => {
       setLoading(true);
 
       // Send request to the external upload server with API key
-      const res: any = await axios.post(`${host}/upload/`, image, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "x-api-key": apiKey, // Add the API key here
-        },
-      });
+      const res: any = await axios.post(`/api/upload/`, image);
 
       if (res.status === 200) {
         const url = res.data.url; // Assuming the server response contains the URL in `res.data.url`
         const newUrls = urls ? [...urls, url] : [url];
         setUrls(newUrls);
+        toast.success("Image uploaded successfully!")
       } else if (res.status === 400) {
         setError(res.data.error);
+        toast.error(res.data.error)
       } else {
         setError("Something went wrong, please try again!");
+        toast.error("Something went wrong, please try again!");
       }
       setLoading(false);
       setTimeout(() => {
         setError("");
       }, 4000);
-    } catch (ex) {
+    } catch (ex: any) {
       setError("Something went wrong, please try again!");
+      toast.error(ex.message)
       setLoading(false);
       setTimeout(() => {
         setError("");
@@ -70,15 +71,17 @@ const UploadImage = () => {
       setUrls(newUrls);
 
       // Send delete request to the external upload server with API key
-      await axios.post(`${host}/upload/delete`, data, {
-        headers: {
-          "x-api-key": apiKey, // Add the API key here
-          "Content-Type": "Application/JSON",
-        },
-      });
+      const ok = await deleteImage(image);
+      if (!ok) {
+        toast.error("Error deleting image! Please try again.")
+        setUrls(urls);
+      } else {
+        toast.success("Image deleted successfully!")
+      }
     } catch (ex) {
       setUrls(urls); // Revert to previous URLs if there's an error
       console.log(ex);
+      toast.error("An unexpected error occurred, this will be fixed soon!")
     }
   };
 
@@ -104,7 +107,7 @@ const UploadImage = () => {
                   <FaTrashCan size="20" />
                 </div>
                 <Image
-                  src={image}
+                  src={`${host}/${image}`}
                   width="100"
                   height="100"
                   alt=""

@@ -10,6 +10,7 @@ import "../globals.css";
 import { getUser } from "@/lib/data";
 import Link from "next/link";
 import { FaEye } from "react-icons/fa6";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Manage - Cyberwizdev blog",
@@ -29,6 +30,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <html>
       <body>
+        <Toaster position="top-right" />
         <div className="min-h-screen flex">
           {/* Sidebar */}
           <aside className="bg-blue-950 text-white text-sm w-60 h-screen py-6 px-3 lg:fixed flex flex-col justify-between">

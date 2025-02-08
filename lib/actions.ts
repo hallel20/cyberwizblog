@@ -8,6 +8,7 @@ import { getServerSession } from "next-auth";
 import { CommentForm, PostFormType, SignUpForm } from "./formTypes";
 import { ContactFormData } from "@/app/(client)/contact/ContactForm";
 import nodemailer from "nodemailer";
+import axios from "axios";
 
 
 export const createUser = async (data: SignUpForm) => {
@@ -277,5 +278,40 @@ export const deleteMessage = async(id: number) => {
   } catch (ex) {
     console.log(ex)
     throw new Error("Failed to delete message!")
+  }
+}
+
+export const deleteImage = async (imagePath: string) => {
+  console.log(imagePath);
+  const image = imagePath
+
+  // Ensure the image URL is valid and extract the filename
+  if (!image || typeof image !== "string") {
+    return false
+  }
+
+  // Extract the filename from the image URL
+  const filename = image.replace("uploads/", ""); // Remove 'uploads/' from the image path
+
+  try {
+    if (process.env.UPLOAD_API_KEY) {
+      // Make a DELETE request to the external API
+      await axios.post(
+        `${process.env.UPLOAD_API}/upload/delete`,
+        { filename },
+        {
+          headers: {
+            "x-api-key": process.env.UPLOAD_API_KEY, // Include the API key
+          },
+        }
+      );
+    } else {
+      console.log("No API key found");
+    }
+
+    return true;
+  } catch (ex: any) {
+    console.log("Something went wrong", ex);
+    return false
   }
 }

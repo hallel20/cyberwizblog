@@ -8,6 +8,8 @@ import Spinner from "./Spinner";
 import { MdClose } from "react-icons/md";
 import { host } from "@/lib/global";
 import { apiKey } from "@/lib/key";
+import { deleteImage } from "@/lib/actions";
+import toast from "react-hot-toast";
 
 interface Props {
   setImages: Dispatch<SetStateAction<string[] | undefined>>;
@@ -35,21 +37,19 @@ const ImageUploadModal = ({ setImages, single }: Props) => {
       setLoading(true);
 
       // Send request to the external upload server with API key
-      const res: any = await axios.post(`${host}/upload/`, image, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "x-api-key": apiKey, // Add the API key here
-        },
-      });
+      const res: any = await axios.post(`/api/upload/`, image);
 
       if (res.status === 200) {
         const url = res.data.url; // Assuming the server response contains the URL in `res.data.url`
         const newUrls = urls ? [...urls, url] : [url];
+        toast.success("Image uploaded successfully!");
         setUrls(newUrls);
       } else if (res.status === 400) {
+        toast.error(res.data.error);
         setError(res.data.error);
       } else {
         setError("Something went wrong, please try again!");
+        toast.error("Something went wrong, please try again!");
       }
       setLoading(false);
       setTimeout(() => {
@@ -57,6 +57,7 @@ const ImageUploadModal = ({ setImages, single }: Props) => {
       }, 4000);
     } catch (ex) {
       setError("Something went wrong, please try again!");
+      toast.error("An unexpected error occurred, this will be fixed soon!");
       setLoading(false);
       setTimeout(() => {
         setError("");
@@ -65,22 +66,22 @@ const ImageUploadModal = ({ setImages, single }: Props) => {
   };
 
   const handleRemove = async (image: string) => {
-    const data = new FormData();
-    data.append("image", image);
     const newUrls = urls && urls.filter((url) => image !== url);
     try {
       setUrls(newUrls);
 
       // Send delete request to the external upload server with API key
-      await axios.post(`${host}/upload/delete`, data, {
-        headers: {
-          "x-api-key": apiKey, // Add the API key here
-          "Content-Type": "Application/JSON",
-        },
-      });
-    } catch (ex) {
+      const ok = await deleteImage(image);
+      if (!ok) {
+        toast.error("Error deleting image! Please try again.");
+        setUrls(urls);
+      } else {
+        toast.success("Image deleted successfully!");
+      }
+    } catch (ex: any) {
       setUrls(urls); // Revert to previous URLs if there's an error
       console.log(ex);
+      toast.error(ex.message);
     }
   };
 
@@ -119,7 +120,7 @@ const ImageUploadModal = ({ setImages, single }: Props) => {
                     <MdClose size="20" />
                   </div>
                   <Image
-                    src={image}
+                    src={`${host}/${image}`}
                     width="100"
                     height="100"
                     alt=""
