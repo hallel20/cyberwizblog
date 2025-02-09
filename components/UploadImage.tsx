@@ -19,7 +19,7 @@ const UploadImage = () => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = (image: string) => {
-    navigator.clipboard.writeText(image);
+    navigator.clipboard.writeText(`${host}/${image}`);
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
@@ -122,7 +122,7 @@ const UploadImage = () => {
                   "Copied"
                 ) : (
                   <span>
-                    {image} <FaCopy size="10" />
+                    {host}/{image} <FaCopy size="10" />
                   </span>
                 )}
               </p>
