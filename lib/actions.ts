@@ -153,6 +153,8 @@ export const createPost = async(data: PostFormType) => {
       title, content, userId: user!.id, slug, tags, categoryId: parseInt(categoryId), status, images: {create: [{url: image}]}
      }})
      revalidatePath("admin/posts")
+     revalidatePath("/")
+     revalidatePath("/posts")
     }
     catch (ex) {
         console.log(ex)
@@ -177,6 +179,8 @@ export const updatePost = async(data: PostFormType, id: number) => {
       title, content, userId: user!.id, tags, categoryId: parseInt(categoryId), status, images: {create: [{url: image}]}
      }})
      revalidatePath("admin/posts")
+     revalidatePath("/");
+     revalidatePath("/posts");
     }
     catch (ex) {
         console.log(ex)
