@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
-    "@prisma/client": "^5.21.1",
+    "@prisma/client": "^6.8.2",
     "@tailwindcss/typography": "^0.5.15",
     "@types/md5": "^2.3.5",
     "axios": "^1.7.7",
@@ -22,6 +22,7 @@
     "next": "14.2.5",
     "next-auth": "^4.24.8",
     "nodemailer": "^6.9.16",
+    "prisma": "^6.8.2",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.1",
