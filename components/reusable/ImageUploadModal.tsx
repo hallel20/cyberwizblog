@@ -120,7 +120,7 @@ const ImageUploadModal = ({ setImages, single }: Props) => {
                     <MdClose size="20" />
                   </div>
                   <Image
-                    src={`${host}/${image}`}
+                    src={`${image}`}
                     width="100"
                     height="100"
                     alt=""

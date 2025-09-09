@@ -38,7 +38,7 @@ export default async function page({ searchParams }: any) {
               <Image
                 width="400"
                 height="400"
-                src={`${host}/${post.images[0].url}`} // Assuming each image object has a `url` field
+                src={`${post.images[0].url}`} // Assuming each image object has a `url` field
                 alt={post.title}
                 className="w-full h-48 object-cover rounded mb-4"
               />

@@ -96,3 +96,11 @@ enum Role {
   admin
   user
 }
+
+model CloudImage {
+  id         Int      @id @default(autoincrement())
+  secure_url String   @unique // Cloudinary secure URL
+  public_id  String   @unique // Cloudinary public ID for deletion
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

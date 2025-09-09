@@ -56,7 +56,7 @@ export default async function SinglePost({ params }: any) {
             <Image
               width="1000"
               height="1000"
-              src={`${host}/${post.images[0].url}`}
+              src={`${post.images[0].url}`}
               alt="Post Image"
               className="w-full rounded-md"
             />

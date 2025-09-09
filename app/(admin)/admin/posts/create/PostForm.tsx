@@ -103,7 +103,7 @@ const PostForm = () => {
         {images?.length === 1 && (
           <>
             <Image
-              src={`${host}/${images[0]}`}
+              src={`${images[0]}`}
               alt=""
               width={200}
               height={200}

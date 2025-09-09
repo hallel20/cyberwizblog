@@ -47,7 +47,7 @@ const ImageInput = ({ defaultImage }: { defaultImage: string }) => {
               onClick={() => setOpen(true)}
             />
             <Image
-              src={`${host}/${images[0]}`}
+              src={`${images[0]}`}
               alt=""
               width="170"
               height="170"

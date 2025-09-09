@@ -49,7 +49,7 @@ const page = async () => {
             key={category.id}
           >
             <Image
-              src={`${host}/${category.image}`}
+              src={`${category.image}`}
               width="150"
               height="150"
               alt={category.slug}

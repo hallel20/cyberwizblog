@@ -29,7 +29,7 @@ export default function PostSlider({ posts }: PostSliderProps) {
         <SwiperSlide key={post.id}>
           <div className="relative bg-gray-100 p-6 rounded-lg shadow-lg">
             <Image
-              src={`${host}/${post.images[0].url}`}
+              src={`${post.images[0].url}`}
               alt={post.title}
               width="1000"
               height="1000"

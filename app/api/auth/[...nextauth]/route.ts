@@ -2,7 +2,7 @@
 import NextAuth, { NextAuthOptions, User, Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import prisma from "@/prisma/db";
 
 // Define a custom token and session type to include "role"

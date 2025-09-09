@@ -26,6 +26,10 @@ const nextConfig = {
         hostname: "api.cyberwizdev.com.ng",
         protocol: "http",
       },
+      {
+        hostname: "res.cloudinary.com",
+        protocol: "https",
+      },
     ],
   },
 };

@@ -2,13 +2,13 @@
 
 import prisma from "@/prisma/db"
 import { revalidatePath } from "next/cache"
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { CategoryForm } from "@/app/(admin)/admin/categories/NewCategory";
 import { getServerSession } from "next-auth";
 import { CommentForm, PostFormType, SignUpForm } from "./formTypes";
 import { ContactFormData } from "@/app/(client)/contact/ContactForm";
 import nodemailer from "nodemailer";
-import axios from "axios";
+import { v2 as cloudinary } from "cloudinary"
 
 
 export const createUser = async (data: SignUpForm) => {
@@ -287,31 +287,22 @@ export const deleteMessage = async(id: number) => {
 
 export const deleteImage = async (imagePath: string) => {
   console.log(imagePath);
-  const image = imagePath
-
-  // Ensure the image URL is valid and extract the filename
-  if (!image || typeof image !== "string") {
-    return false
-  }
-
-  // Extract the filename from the image URL
-  const filename = image.replace("uploads/", ""); // Remove 'uploads/' from the image path
-
+  
   try {
-    if (process.env.UPLOAD_API_KEY) {
-      // Make a DELETE request to the external API
-      await axios.post(
-        `${process.env.UPLOAD_API}/upload/delete`,
-        { filename },
-        {
-          headers: {
-            "x-api-key": process.env.UPLOAD_API_KEY, // Include the API key
-          },
-        }
-      );
-    } else {
-      console.log("No API key found");
+    const image = await prisma.cloudImage.findUnique({where: {secure_url: imagePath}})
+  
+    // Ensure the image URL is valid and extract the filename
+    if (!image) {
+      return false
     }
+  
+    // Delete the image from Cloudinary using public_id
+    await cloudinary.uploader.destroy(image.public_id);
+
+    // Delete the image record from the database
+    await prisma.image.delete({
+      where: { id: image.id },
+    });
 
     return true;
   } catch (ex: any) {

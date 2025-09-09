@@ -1,41 +1,59 @@
 import { NextRequest, NextResponse } from "next/server";
-import axios from "axios";
+import { v2 as cloudinary } from "cloudinary";
+import prisma from "@/prisma/db";
+
+// Configuring Cloudinary with environment variables
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export const POST = async (req: NextRequest) => {
   // Getting the sent image data
   const data = await req.json();
-  console.log(data);
-  const image = data.data.image;
+  const imageUrl = data.data.image;
 
-  // Ensure the image URL is valid and extract the filename
-  if (!image || typeof image !== "string") {
-    return NextResponse.json("Invalid image data!", { status: 400 });
+  // Ensure the image URL is valid
+  if (!imageUrl || typeof imageUrl !== "string") {
+    return NextResponse.json(
+      { message: "Invalid image URL!" },
+      { status: 400 }
+    );
   }
 
-  // Extract the filename from the image URL
-  const filename = image.replace("uploads/", ""); // Remove 'uploads/' from the image path
-
   try {
-    if (process.env.UPLOAD_API_KEY) {
-      // Make a DELETE request to the external API
-      await axios.post(
-        `${process.env.UPLOAD_API}/upload/delete`,
-        { filename },
-        {
-          headers: {
-            "x-api-key": process.env.UPLOAD_API_KEY, // Include the API key
-          },
-        }
+    // Find the image in the database by secure_url
+    const image = await prisma.cloudImage.findUnique({
+      where: { secure_url: imageUrl },
+    });
+
+    if (!image) {
+      return NextResponse.json(
+        { message: "Image not found in database!" },
+        { status: 404 }
       );
-    } else {
-      console.log("No API key found");
     }
 
-    return NextResponse.json("File Deleted Successfully!", { status: 200 });
-  } catch (ex: any) {
-    console.log("Something went wrong", ex);
-    return NextResponse.json("The Image could not be deleted!", {
-      status: 500,
+    // Delete the image from Cloudinary using public_id
+    await cloudinary.uploader.destroy(image.public_id);
+
+    // Delete the image record from the database
+    await prisma.image.delete({
+      where: { id: image.id },
     });
+
+    return NextResponse.json(
+      { message: "Image deleted successfully!" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Delete Error:", error);
+    return NextResponse.json(
+      { message: "The image could not be deleted!" },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
   }
 };

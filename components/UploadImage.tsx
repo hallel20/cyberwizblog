@@ -4,10 +4,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { FaCamera, FaTrashCan } from "react-icons/fa6";
 import Spinner from "@/components/reusable/Spinner";
-import { MdClose } from "react-icons/md";
 import { FaCopy } from "react-icons/fa";
 import { host } from "@/lib/global";
-import { apiKey } from "@/lib/key";
 import { deleteImage } from "@/lib/actions";
 import toast from "react-hot-toast";
 
@@ -19,7 +17,7 @@ const UploadImage = () => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = (image: string) => {
-    navigator.clipboard.writeText(`${host}/${image}`);
+    navigator.clipboard.writeText(`${image}`);
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
@@ -107,7 +105,7 @@ const UploadImage = () => {
                   <FaTrashCan size="20" />
                 </div>
                 <Image
-                  src={`${host}/${image}`}
+                  src={`${image}`}
                   width="100"
                   height="100"
                   alt=""

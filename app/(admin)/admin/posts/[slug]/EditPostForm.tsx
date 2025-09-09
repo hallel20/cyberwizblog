@@ -6,7 +6,6 @@ import UploadImage from "@/components/UploadImage";
 import { updatePost } from "@/lib/actions";
 import { getCategories } from "@/lib/data";
 import { PostFormType } from "@/lib/formTypes";
-import { host } from "@/lib/global";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,17 +20,21 @@ const SimpleMdeReact = dynamic(() => import("react-simplemde-editor"), {
 const EditPost = ({ post }: { post: any }) => {
   const [categories, setCategories] = useState<any[]>();
   const [error, setError] = useState("");
-  //   console.log(post);
-  const [images, setImages] = useState<string[] | undefined>([
-    post.images[0].url,
-  ]);
+  // Ensure images is always an array of strings (urls)
+  const [images, setImages] = useState<string[] | undefined>(
+    post.images && post.images.length > 0
+      ? post.images.map((img: any) => img.url || img)
+      : []
+  );
   const [loading, setLoading] = useState(false);
-  const { register, control, reset, handleSubmit } = useForm<PostFormType>({
+  const { register, control, reset, handleSubmit, setValue, watch } = useForm<PostFormType>({
     defaultValues: {
       title: post.title,
       content: post.content,
+      images: post.images && post.images.length > 0 ? post.images.map((img: any) => img.url || img) : [],
       categoryId: post.categoryId,
-      tags: post.tags,
+      tags: Array.isArray(post.tags) ? post.tags.join(", ") : post.tags || "",
+      status: post.status || "draft",
     },
   });
 
@@ -42,6 +45,11 @@ const EditPost = ({ post }: { post: any }) => {
     };
     getCats();
   }, []);
+
+  // Keep form images in sync with local images state
+  useEffect(() => {
+    setValue("images", images);
+  }, [images, setValue]);
 
   return (
     <form className="bg-white rounded-lg shadow-lg p-6 font-sans max-w-4xl mx-auto">
@@ -59,7 +67,7 @@ const EditPost = ({ post }: { post: any }) => {
               type="text"
               placeholder="Enter Title"
               className="text-3xl font-bold w-full p-2 border-b border-gray-300 focus:border-gray-400 outline-none"
-              {...register("title")}
+              {...register("title", { required: true })}
             />
           </div>
           <div className="flex gap-2">
@@ -68,7 +76,9 @@ const EditPost = ({ post }: { post: any }) => {
               onClick={handleSubmit(async (data) => {
                 try {
                   setLoading(true);
-                  await updatePost(data, post.id);
+                  // Convert tags string to array if needed
+                  const tags = typeof data.tags === "string" ? data.tags.split(",").map((t) => t.trim()).filter(Boolean) : data.tags;
+                  await updatePost({ ...data, tags, images }, post.id);
                   setLoading(false);
                 } catch (ex) {
                   setError("Something went wrong. Please try again!");
@@ -76,6 +86,7 @@ const EditPost = ({ post }: { post: any }) => {
                 }
               })}
               className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-200"
+              disabled={loading}
             >
               Save {loading && <Spinner />}
             </button>
@@ -87,6 +98,8 @@ const EditPost = ({ post }: { post: any }) => {
             </Link>
           </div>
         </header>
+
+        {error && <div className="text-red-500 text-center py-2">{error}</div>}
 
         {/* Main content editor */}
         <div className="flex mt-6">
@@ -102,7 +115,8 @@ const EditPost = ({ post }: { post: any }) => {
                 />
               )}
             />
-            <UploadImage />
+            {/* Optionally, allow uploading more images here if needed */}
+            {/* <UploadImage /> */}
           </div>
 
           {/* Sidebar */}
@@ -110,9 +124,13 @@ const EditPost = ({ post }: { post: any }) => {
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Category</label>
               <select
-                {...register("categoryId")}
+                {...register("categoryId", { required: true })}
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                defaultValue={post.categoryId}
               >
+                <option value="" disabled>
+                  Select category
+                </option>
                 {categories?.map((category: any) => (
                   <option value={category.id} key={category.id}>
                     {category.name}
@@ -126,37 +144,38 @@ const EditPost = ({ post }: { post: any }) => {
               <input
                 type="text"
                 {...register("tags")}
-                placeholder="Add tags"
+                placeholder="Add tags (comma separated)"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Featured Image</label>
-              {images && (
+              {images && images.length > 0 ? (
                 <>
-                  <input
-                    type="hidden"
-                    defaultValue={images[0]}
-                    {...register("image")}
-                  />
+                  {/* Hidden input for images array */}
+                  <input type="hidden" {...register("images")} value={images[0]} />
                   <Image
-                    src={`${host}/${images[0]}`}
-                    alt=""
-                    width="150"
-                    height="150"
+                    src={images[0]}
+                    alt="Featured"
+                    width={150}
+                    height={150}
                     className="object-cover rounded-lg"
                   />
                 </>
+              ) : (
+                <span className="text-gray-400">No image selected</span>
               )}
             </div>
-            <ImageUploadModal setImages={setImages} single />
+            {/* Image upload modal updates images state */}
+            <ImageUploadModal setImages={setImages} single images={images} />
 
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Status</label>
               <select
-                {...register("status")}
+                {...register("status", { required: true })}
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                defaultValue={post.status || "draft"}
               >
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>

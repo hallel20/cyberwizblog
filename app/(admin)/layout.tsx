@@ -9,8 +9,9 @@ import Logout from "@/components/Logout";
 import "../globals.css";
 import { getUser } from "@/lib/data";
 import Link from "next/link";
-import { FaEye } from "react-icons/fa6";
+import { FaEye, FaHouseChimney, FaList, FaMessage, FaUsers } from "react-icons/fa6";
 import { Toaster } from "react-hot-toast";
+import { MdCategory } from "react-icons/md";
 
 export const metadata: Metadata = {
   title: "Manage - Cyberwizdev blog",
@@ -31,9 +32,9 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
     <html>
       <body>
         <Toaster position="top-right" />
-        <div className="min-h-screen flex">
-          {/* Sidebar */}
-          <aside className="bg-blue-950 text-white text-sm w-60 h-screen py-6 px-3 lg:fixed flex flex-col justify-between">
+        <div className="min-h-screen flex flex-col">
+          {/* Sidebar for Desktop */}
+          <aside className="bg-blue-950 text-white text-sm w-60 h-screen py-6 px-3 lg:fixed flex-col justify-between hidden lg:flex">
             <div>
               <div className="text-center mb-10">
                 <Image
@@ -41,8 +42,9 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
                     `https://www.gravatar.com/avatar/${emailHash}` ||
                     "/noavatar.png"
                   }
-                  width="250"
-                  height="250"
+                  width="1"
+                  height="1"
+                  sizes="100vw"
                   alt=""
                   className="w-24 h-24 object-cover mx-auto rounded-full"
                 />
@@ -61,12 +63,51 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
             </div>
           </aside>
           {/* Main Dashboard */}
-          <main className="ms-0 lg:ms-60 p-6">
+          <main className="flex-1 ms-0 lg:ms-60 p-6">
             <div className="flex justify-end">
               <Logout />
             </div>
             <div className="w-full">{children}</div>
           </main>
+          {/* Mobile Bottom Navigation */}
+          <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-blue-950 text-white flex justify-around py-2 border-t border-blue-900">
+            <Link href="/admin">
+              <div className="flex flex-col items-center px-2 py-1">
+                <FaHouseChimney size="20" />
+                <span className="text-xs">Home</span>
+              </div>
+            </Link>
+            <Link href="/admin/posts">
+              <div className="flex flex-col items-center px-2 py-1">
+                <FaList size="20" />
+                <span className="text-xs">Posts</span>
+              </div>
+            </Link>
+            <Link href="/admin/comments">
+              <div className="flex flex-col items-center px-2 py-1">
+                <FaMessage size="20" />
+                <span className="text-xs">Comments</span>
+              </div>
+            </Link>
+            <Link href="/admin/categories">
+              <div className="flex flex-col items-center px-2 py-1">
+                <MdCategory size="20" />
+                <span className="text-xs">Categories</span>
+              </div>
+            </Link>
+            <Link href="/admin/users">
+              <div className="flex flex-col items-center px-2 py-1">
+                <FaUsers size="20" />
+                <span className="text-xs">Users</span>
+              </div>
+            </Link>
+            <Link href="/admin/messages">
+              <div className="flex flex-col items-center px-2 py-1">
+                <FaMessage size="20" />
+                <span className="text-xs">Messages</span>
+              </div>
+            </Link>
+          </nav>
         </div>
       </body>
     </html>

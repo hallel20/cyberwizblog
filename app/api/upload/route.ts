@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import axios from "axios";
-import FormData from "form-data";
+import { v2 as cloudinary } from "cloudinary";
+import prisma from "@/prisma/db";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export const POST = async (req: NextRequest) => {
   // Getting the sent image
@@ -32,35 +38,31 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
-  // Create a new FormData instance to send the image
-  const data = new FormData();
-  const imageBuffer = Buffer.from(await imageFile.arrayBuffer());
-  data.append("image", imageBuffer, imageFile.name);
-
   try {
-    // Forward the request to the external API
-    const res = await axios.post(`${process.env.UPLOAD_API!}/upload`, data, {
-      headers: {
-        "x-api-key": process.env.UPLOAD_API_KEY,
-        ...data.getHeaders(), // Include headers from FormData
+    // Get the buffer and convert to data URI
+    const buffer = Buffer.from(await imageFile.arrayBuffer());
+    const base64 = buffer.toString("base64");
+    const dataUri = `data:${imageFile.type};base64,${base64}`;
+
+    // Upload to Cloudinary
+    const res = await cloudinary.uploader.upload(dataUri);
+    prisma.cloudImage.create({
+      data: {
+        secure_url: res.secure_url,
+        public_id: res.public_id,
       },
     });
-    // console.log(res.data);
 
-    // Return the response from the external API
+    // Return the response
     return NextResponse.json(
       {
         message: "Image uploaded successfully!",
-        url: res.data.path,
+        url: res.secure_url,
       },
       { status: 200 }
     );
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data);
-    } else {
-      console.error("Unexpected Error:", error);
-    }
+    console.error("Upload Error:", error);
     return NextResponse.json(
       { message: "The image could not be uploaded!" },
       { status: 500 }

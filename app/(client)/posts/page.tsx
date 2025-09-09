@@ -34,7 +34,7 @@ const page = async ({ searchParams }: any) => {
               <Image
                 width="200"
                 height="200"
-                src={`${host}/${post.images[0].url}`} // Assuming each image object has a `url` field
+                src={`${post.images[0].url}`} // Assuming each image object has a `url` field
                 alt={post.title}
                 className="w-full h-48 object-cover rounded mb-4"
               />
