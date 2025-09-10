@@ -31,7 +31,7 @@ const EditPost = ({ post }: { post: any }) => {
     defaultValues: {
       title: post.title,
       content: post.content,
-      images: post.images && post.images.length > 0 ? post.images.map((img: any) => img.url || img) : [],
+      image: post.images && post.images[0],
       categoryId: post.categoryId,
       tags: Array.isArray(post.tags) ? post.tags.join(", ") : post.tags || "",
       status: post.status || "draft",
@@ -48,7 +48,7 @@ const EditPost = ({ post }: { post: any }) => {
 
   // Keep form images in sync with local images state
   useEffect(() => {
-    setValue("images", images);
+    setValue("image", images?.[0] || "");
   }, [images, setValue]);
 
   return (
@@ -77,8 +77,7 @@ const EditPost = ({ post }: { post: any }) => {
                 try {
                   setLoading(true);
                   // Convert tags string to array if needed
-                  const tags = typeof data.tags === "string" ? data.tags.split(",").map((t) => t.trim()).filter(Boolean) : data.tags;
-                  await updatePost({ ...data, tags, images }, post.id);
+                  await updatePost({ ...data }, post.id);
                   setLoading(false);
                 } catch (ex) {
                   setError("Something went wrong. Please try again!");
@@ -154,7 +153,7 @@ const EditPost = ({ post }: { post: any }) => {
               {images && images.length > 0 ? (
                 <>
                   {/* Hidden input for images array */}
-                  <input type="hidden" {...register("images")} value={images[0]} />
+                  <input type="hidden" {...register("image")} value={images[0]} />
                   <Image
                     src={images[0]}
                     alt="Featured"
@@ -168,7 +167,7 @@ const EditPost = ({ post }: { post: any }) => {
               )}
             </div>
             {/* Image upload modal updates images state */}
-            <ImageUploadModal setImages={setImages} single images={images} />
+            <ImageUploadModal setImages={setImages} single />
 
             <div className="flex flex-col">
               <label className="font-semibold mb-2">Status</label>
