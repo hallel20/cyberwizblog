@@ -17,7 +17,6 @@
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
-    "cloudinary": "^2.7.0",
     "isomorphic-dompurify": "^2.16.0",
     "lodash.debounce": "^4.0.8",
     "marked": "^14.1.3",
