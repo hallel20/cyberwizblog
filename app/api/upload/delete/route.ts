@@ -1,13 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
 import prisma from "@/prisma/db";
-
-// Configuring Cloudinary with environment variables
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 export const POST = async (req: NextRequest) => {
   // Getting the sent image data
@@ -19,6 +11,17 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(
       { message: "Invalid image URL!" },
       { status: 400 }
+    );
+  }
+
+  const uploadUrl = process.env.UPLOAD_URL;
+  const apiKey = process.env.UPLOAD_API_KEY;
+
+  if (!uploadUrl || !apiKey) {
+    console.error("UPLOAD_URL or UPLOAD_API_KEY is not configured on the server.");
+    return NextResponse.json(
+      { message: "Server configuration error." },
+      { status: 500 }
     );
   }
 
@@ -35,11 +38,27 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
-    // Delete the image from Cloudinary using public_id
-    await cloudinary.uploader.destroy(image.public_id);
+    // Delete the image from your custom upload server using public_id
+    const response = await fetch(uploadUrl, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": apiKey,
+      },
+      body: JSON.stringify({ public_id: image.public_id }),
+    });
+
+    if (!response.ok) {
+      const result = await response.json();
+      console.error("Delete from server failed:", result);
+      return NextResponse.json(
+        { message: result.error || "Failed to delete file from server." },
+        { status: response.status }
+      );
+    }
 
     // Delete the image record from the database
-    await prisma.image.delete({
+    await prisma.cloudImage.delete({
       where: { id: image.id },
     });
 

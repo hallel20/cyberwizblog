@@ -1,12 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
 import prisma from "@/prisma/db";
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 export const POST = async (req: NextRequest) => {
   // Getting the sent image
@@ -38,18 +31,44 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
-  try {
-    // Get the buffer and convert to data URI
-    const buffer = Buffer.from(await imageFile.arrayBuffer());
-    const base64 = buffer.toString("base64");
-    const dataUri = `data:${imageFile.type};base64,${base64}`;
+  const uploadUrl = process.env.UPLOAD_URL;
+  const apiKey = process.env.UPLOAD_API_KEY;
 
-    // Upload to Cloudinary
-    const res = await cloudinary.uploader.upload(dataUri);
-    prisma.cloudImage.create({
+  if (!uploadUrl || !apiKey) {
+    console.error("UPLOAD_URL or UPLOAD_API_KEY is not configured on the server.");
+    return NextResponse.json(
+      { message: "Server configuration error." },
+      { status: 500 }
+    );
+  }
+
+  try {
+    // Forward the file to your custom upload server
+    const forwardFormData = new FormData();
+    forwardFormData.append("file", imageFile);
+
+    const response = await fetch(uploadUrl, {
+      method: "POST",
+      headers: {
+        "X-API-Key": apiKey,
+      },
+      body: forwardFormData,
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { message: result.error || "File upload failed." },
+        { status: response.status }
+      );
+    }
+
+    // Store the upload information in your database
+    await prisma.cloudImage.create({
       data: {
-        secure_url: res.secure_url,
-        public_id: res.public_id,
+        secure_url: result.url,
+        public_id: result.public_id, // Now properly saved from the PHP server response
       },
     });
 
@@ -57,7 +76,8 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(
       {
         message: "Image uploaded successfully!",
-        url: res.secure_url,
+        url: result.url,
+        public_id: result.public_id,
       },
       { status: 200 }
     );
