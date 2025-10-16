@@ -8,7 +8,6 @@ import { getServerSession } from "next-auth";
 import { CommentForm, PostFormType, SignUpForm } from "./formTypes";
 import { ContactFormData } from "@/app/(client)/contact/ContactForm";
 import nodemailer from "nodemailer";
-import { v2 as cloudinary } from "cloudinary"
 
 
 export const createUser = async (data: SignUpForm) => {
@@ -288,21 +287,47 @@ export const deleteMessage = async(id: number) => {
 export const deleteImage = async (imagePath: string) => {
   console.log(imagePath);
   
+  const uploadUrl = process.env.UPLOAD_URL;
+  const apiKey = process.env.UPLOAD_API_KEY;
+
+  if (!uploadUrl || !apiKey) {
+    console.error("UPLOAD_URL or UPLOAD_API_KEY is not configured");
+    return false;
+  }
+  
   try {
     const image = await prisma.cloudImage.findUnique({where: {secure_url: imagePath}})
   
-    // Ensure the image URL is valid and extract the filename
+    // Ensure the image exists in the database
     if (!image) {
+      console.log("Image not found in database");
       return false
     }
   
-    // Delete the image from Cloudinary using public_id
-    await cloudinary.uploader.destroy(image.public_id);
+    // Delete the image from custom upload server using public_id
+    const response = await fetch(uploadUrl, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": apiKey,
+      },
+      body: JSON.stringify({ public_id: image.public_id }),
+    });
+
+    if (!response.ok) {
+      const result = await response.json();
+      console.error("Failed to delete from server:", result);
+      return false;
+    }
+
+    console.log("Image deleted from server successfully");
 
     // Delete the image record from the database
-    await prisma.image.delete({
+    await prisma.cloudImage.delete({
       where: { id: image.id },
     });
+
+    console.log("Image deleted from database successfully");
 
     return true;
   } catch (ex: any) {

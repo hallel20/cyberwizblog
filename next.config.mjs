@@ -19,11 +19,11 @@ const nextConfig = {
         protocol: "http",
       },
       {
-        hostname: "api.cyberwizdev.com.ng",
+        hostname: "files.cyberwizdev.com.ng",
         protocol: "https",
       },
       {
-        hostname: "api.cyberwizdev.com.ng",
+        hostname: "files.cyberwizdev.com.ng",
         protocol: "http",
       },
       {
